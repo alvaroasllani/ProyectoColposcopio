@@ -17,11 +17,13 @@ public class VisorImagenes extends JFrame {
     private ArrayList<String> listaImagenes;
     private int indiceActual;
     private JLabel imagenActual;
-    private JPanel panelBotones;  // Agregar este atributo
+    private JPanel panelBotones;
+    private String rutaDestino;
 
-    public VisorImagenes(ArrayList<String> listaImagenes) {
+    public VisorImagenes(ArrayList<String> listaImagenes, String rutaDestino) {
         this.listaImagenes = listaImagenes;
         this.indiceActual = 0;
+        this.rutaDestino = rutaDestino;
 
         initComponents();
         mostrarImagenActual();
@@ -59,7 +61,7 @@ public class VisorImagenes extends JFrame {
                 File imagenActual = new File(rutaImagenActual);
 
                 // Nueva ruta de guardado
-                String nuevaRuta = "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\img";
+                String nuevaRuta = rutaDestino;
 
                 // Crear un nuevo nombre de archivo para la imagen en la nueva ruta
                 String nombreOriginal = imagenActual.getName();

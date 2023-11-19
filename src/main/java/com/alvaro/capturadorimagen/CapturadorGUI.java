@@ -6,11 +6,9 @@ package com.alvaro.capturadorimagen;
 
 import com.github.sarxos.webcam.Webcam;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -20,9 +18,14 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -30,8 +33,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JScrollBar;
-import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,6 +46,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
     Webcam webcam;
     Boolean isRunning = false;
     private int imageCounter = 1;
+    private ArrayList<JCheckBox> listaCheckBox = new ArrayList<JCheckBox>();
 
     /**
      * Creates new form CapturadorGUI
@@ -55,11 +57,11 @@ public class CapturadorGUI extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
 
         Dimension[] customResolutions = new Dimension[]{
-            new Dimension(960, 540)
+            new Dimension(940, 600)
         };
         webcam = Webcam.getDefault();
         webcam.setCustomViewSizes(customResolutions);
-        webcam.setViewSize(new Dimension(960, 540));
+        webcam.setViewSize(new Dimension(940, 600));
         webcam.open();
         panelImagenes.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -71,6 +73,8 @@ public class CapturadorGUI extends javax.swing.JFrame {
                 eliminarImagenes();
             }
         });
+        scrollPaneImage.getVerticalScrollBar().setUnitIncrement(16);  // Puedes ajustar el valor según tu preferencia
+
     }
 
     /**
@@ -93,9 +97,11 @@ public class CapturadorGUI extends javax.swing.JFrame {
         btnSalir = new javax.swing.JButton();
         btnAbrirImagenes = new javax.swing.JButton();
         btnAgrandar = new javax.swing.JButton();
+        btnGuardarTodo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1366, 768));
+        setSize(new java.awt.Dimension(1366, 768));
 
         btnIniciar.setText("Iniciar");
         btnIniciar.addActionListener(new java.awt.event.ActionListener() {
@@ -126,17 +132,18 @@ public class CapturadorGUI extends javax.swing.JFrame {
         });
 
         scrollPaneImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPaneImage.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneImage.setAutoscrolls(true);
 
         javax.swing.GroupLayout panelImagenesLayout = new javax.swing.GroupLayout(panelImagenes);
         panelImagenes.setLayout(panelImagenesLayout);
         panelImagenesLayout.setHorizontalGroup(
             panelImagenesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 296, Short.MAX_VALUE)
+            .addGap(0, 404, Short.MAX_VALUE)
         );
         panelImagenesLayout.setVerticalGroup(
             panelImagenesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 528, Short.MAX_VALUE)
+            .addGap(0, 556, Short.MAX_VALUE)
         );
 
         scrollPaneImage.setViewportView(panelImagenes);
@@ -147,11 +154,11 @@ public class CapturadorGUI extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 958, Short.MAX_VALUE)
+            .addComponent(imageHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 938, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageHolder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(imageHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
         );
 
         btnSalir.setText("Salir");
@@ -175,51 +182,69 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
 
+        btnGuardarTodo.setText("Guardar Todo");
+        btnGuardarTodo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarTodoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(scrollPaneImage, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(scrollPaneImage, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnGuardarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(32, 32, 32))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnDetener, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(259, 259, 259)
+                                .addComponent(btnCapturar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDetener, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(107, 107, 107)
-                .addComponent(btnCapturar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(scrollPaneImage, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(scrollPaneImage, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnDetener, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCapturar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                    .addComponent(btnGuardarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addContainerGap(30, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCapturar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDetener, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -262,7 +287,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
             int panelWidth = panelImagenes.getWidth();
 
             // Establecer una altura fija para las miniaturas
-            int thumbnailHeight = 100; // Puedes ajustar esta altura según tus necesidades
+            int thumbnailHeight = 200; // Puedes ajustar esta altura según tus necesidades
 
             // Calcular el ancho proporcional para mantener la relación de aspecto
             int thumbnailWidth = (int) (image.getWidth(null) * ((double) thumbnailHeight / image.getHeight(null)));
@@ -277,9 +302,6 @@ public class CapturadorGUI extends javax.swing.JFrame {
             ImageIcon thumbnail = new ImageIcon(image.getScaledInstance(thumbnailWidth, thumbnailHeight, Image.SCALE_SMOOTH));
 
             ImageIO.write((BufferedImage) image, "PNG", fileToSave);
-
-            // Crear un espacio vertical entre las miniaturas
-            panelImagenes.add(Box.createVerticalStrut(10));
 
             // Crear un JLabel para la miniatura
             JLabel thumbnailLabel = new JLabel(thumbnail);
@@ -320,12 +342,32 @@ public class CapturadorGUI extends javax.swing.JFrame {
             imagePanel.add(checkBox);
             imagePanel.add(thumbnailLabel);
 
-            // Agregar el JPanel al panelImagenes
-            panelImagenes.add(imagePanel);
+            // Configurar el JPanel con BoxLayout y alineación vertical (solo si no se ha configurado antes)
+            if (!(panelImagenes.getLayout() instanceof BoxLayout)) {
+                panelImagenes.setLayout(new BoxLayout(panelImagenes, BoxLayout.Y_AXIS));
+            }
+
+            // Verificar si el checkbox está seleccionado (imagen guardada)
+            if (checkBox.isSelected()) {
+                // Añadir un texto indicando que ya está guardado
+                JLabel savedLabel = new JLabel("Ya Guardado");
+                savedLabel.setForeground(Color.GREEN);  // Color del texto
+                imagePanel.add(savedLabel);
+
+                // Desactivar el checkbox ya que la imagen está guardada
+                checkBox.setEnabled(false);
+                // Cambiar el borde del JLabel a verde
+                thumbnailLabel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+            }
+
+            // Agregar al inicio si es una nueva imagen
+            panelImagenes.add(imagePanel, 0);
 
             // Repintar el panelImagenes para reflejar los cambios
             panelImagenes.revalidate();
             panelImagenes.repaint();
+
+            listaCheckBox.add(checkBox);
 
             // Incrementar el contador para la próxima imagen
             imageCounter++;
@@ -337,31 +379,90 @@ public class CapturadorGUI extends javax.swing.JFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
         try {
-            // Nueva ruta de guardado
-            String nuevaRuta = "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\img";
+            // Obtener la fecha actual en el formato "yy-MM-dd"
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd");
+            String fechaActual = dateFormat.format(new Date());
 
-            boolean alMenosUnaSeleccionada = false;  // Variable para rastrear si al menos una imagen está seleccionada
+            // Nueva ruta de guardado con la fecha actual
+            String nuevaRuta = "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\img\\" + fechaActual;
+
+            boolean alMenosUnaSeleccionada = false; // Variable para rastrear si al menos una imagen está seleccionada
+
+            // Crear la carpeta de destino si no existe
+            File carpetaDestino = new File(nuevaRuta);
+            if (!carpetaDestino.exists()) {
+                carpetaDestino.mkdirs();  // Crea la carpeta y sus directorios padres si no existen
+            }
 
             // Iterar a través de las imágenes capturadas
-            for (int i = 1; i < imageCounter; i++) {
-                // Obtener la ruta de la imagen original capturada
-                String originalImagePath = "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\thumbnails\\img" + i + ".png";
+            for (int i = 0; i < listaCheckBox.size(); i++) {
+                // Obtener la ruta de la imagen original
+                String originalImagePath = "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\thumbnails\\img" + (i + 1) + ".png";
 
-                // Crear un nuevo nombre de archivo para la imagen en la nueva ruta
-                String fileName = "ImagenGuardada" + i + ".png";
-                File fileToSave = new File(nuevaRuta, fileName);
+                // Obtener el JCheckBox asociado a la imagen
+                JCheckBox checkBox = listaCheckBox.get(i);
 
-                // Copiar la imagen a la nueva ubicación
-                if (copyImage(originalImagePath, fileToSave)) {
-                    alMenosUnaSeleccionada = true;  // Marcar que al menos una imagen está seleccionada
+                // Si el JCheckBox está marcado y no está deshabilitado, copiar la imagen a la nueva ubicación
+                if (checkBox.isSelected() && checkBox.isEnabled()) {
+                    // Obtener un identificador único basado en el nombre original y el timestamp
+                    String originalImageName = "ImagenGuardada" + (i + 1);
+                    String hash = sha256(originalImageName + System.currentTimeMillis()).substring(0, 8); // Truncar a 8 caracteres
+
+                    // Generar el nombre de archivo único
+                    String fileName = "img-gineco" + hash + ".png";
+                    File fileToSave = new File(nuevaRuta, fileName);
+
+                    // Verificar si la imagen ya está guardada
+                    if (!fileToSave.exists()) {
+                        // Copiar la imagen a la nueva ubicación
+                        if (copyImage(originalImagePath, fileToSave)) {
+                            alMenosUnaSeleccionada = true;
+
+                            // Cambiar el borde a verde y deshabilitar permanentemente el JCheckBox
+                            checkBox.setEnabled(false);
+                            // Obtener el JPanel que contiene el JLabel y el JCheckBox
+                            JPanel imagePanel = (JPanel) checkBox.getParent();
+                            // Obtener el JLabel del JPanel
+                            JLabel thumbnailLabel = (JLabel) imagePanel.getComponent(1);
+                            // Cambiar el borde del JLabel a verde
+                            thumbnailLabel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+
+                            // Desmarcar el JCheckBox 
+                            checkBox.setSelected(false);
+
+                            // Quitar el JPanel del panel de imágenes
+                            panelImagenes.remove(imagePanel);
+
+                            // Repintar el panelImagenes para reflejar los cambios
+                            panelImagenes.revalidate();
+                            panelImagenes.repaint();
+
+                            // Agregar un MouseListener para que ya no se pueda volver a marcar
+                            thumbnailLabel.addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    // Desactivar el listener del mouse para esta miniatura específica
+                                    thumbnailLabel.removeMouseListener(this);
+
+                                    checkBox.setSelected(!checkBox.isSelected());
+                                    if (checkBox.isSelected()) {
+                                        thumbnailLabel.setBorder(BorderFactory.createLineBorder(Color.RED));
+                                    } else {
+                                        thumbnailLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        // Si la imagen ya existe, mostrar un mensaje de advertencia
+                        JOptionPane.showMessageDialog(this, "Estás intentando guardar una imagen que ya existe.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             }
 
-            // Mostrar advertencia si ninguna imagen está seleccionada
             if (!alMenosUnaSeleccionada) {
                 JOptionPane.showMessageDialog(this, "Por favor, marque las imágenes que quiere guardar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             } else {
-                // Mostrar mensaje de éxito si al menos una imagen está seleccionada y se han guardado
                 JOptionPane.showMessageDialog(this, "Imágenes guardadas con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
 
@@ -385,9 +486,47 @@ public class CapturadorGUI extends javax.swing.JFrame {
     private void btnAgrandarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgrandarActionPerformed
         // TODO add your handling code here:
         // Crear una instancia de VisorImagenes y pasar la lista de rutas de imágenes
-        VisorImagenes visor = new VisorImagenes(obtenerRutasImagenes());
+        // Obtener la fecha actual en el formato "yy-MM-dd"
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd");
+        String fechaActual = dateFormat.format(new Date());
+
+        // Crear una instancia de VisorImagenes y pasar la lista de rutas de imágenes y la ruta de destino
+        VisorImagenes visor = new VisorImagenes(obtenerRutasImagenes(), "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\img\\" + fechaActual);
         visor.setVisible(true);
     }//GEN-LAST:event_btnAgrandarActionPerformed
+
+    private void btnGuardarTodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarTodoActionPerformed
+        // TODO add your handling code here:
+        try {
+            String nuevaRuta = "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\img";
+
+            boolean alMenosUnaSeleccionada = false;
+
+            for (int i = 0; i < listaCheckBox.size(); i++) { // Iterar a través de la lista de JCheckBox
+                JCheckBox checkBox = listaCheckBox.get(i);
+                if (checkBox.isSelected()) {
+                    String fileName = "ImagenGuardada" + (i + 1) + ".png";
+                    File fileToSave = new File(nuevaRuta, fileName);
+
+                    if (!fileToSave.exists()) {
+                        String originalImagePath = "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\thumbnails\\img" + (i + 1) + ".png";
+                        if (copyImage(originalImagePath, fileToSave)) {
+                            alMenosUnaSeleccionada = true;
+                        }
+                    }
+                }
+            }
+
+            if (!alMenosUnaSeleccionada) {
+                JOptionPane.showMessageDialog(this, "Por favor, marque las imágenes que quiere guardar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Imágenes guardadas con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(CapturadorGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGuardarTodoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -440,12 +579,16 @@ public class CapturadorGUI extends javax.swing.JFrame {
             while (true && isRunning) {
                 try {
                     Image image = webcam.getImage();
-                    imageHolder.setIcon(new ImageIcon(image));
+
+                    // Verificar si la imagen no es nula antes de crear el ImageIcon
+                    if (image != null) {
+                        imageHolder.setIcon(new ImageIcon(image));
+                    }
+
                     Thread.sleep(50);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CapturadorGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
         }
     }
@@ -482,7 +625,6 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error al abrir la carpeta.", "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
         }
     }
     // Método para copiar una imagen de una ubicación a otra
@@ -510,13 +652,35 @@ public class CapturadorGUI extends javax.swing.JFrame {
         }
         return rutasImagenes;
     }
+// Función para obtener el hash SHA-256 de una cadena
 
+    private static String sha256(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // Convertir el hash a una representación hexadecimal
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(CapturadorGUI.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrirImagenes;
     private javax.swing.JButton btnAgrandar;
     private javax.swing.JButton btnCapturar;
     private javax.swing.JButton btnDetener;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnGuardarTodo;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnSalir;
     private javax.swing.JLabel imageHolder;
