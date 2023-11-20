@@ -32,24 +32,37 @@ public class VisorImagenes extends JFrame {
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle("Visor de Imágenes");
-        setSize(800, 600);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);  // Maximizar el JFrame al tamaño de la pantalla
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         imagenActual = new JLabel();
+        imagenActual.setHorizontalAlignment(SwingConstants.CENTER);  // Centrar la imagen horizontalmente
+        imagenActual.setVerticalAlignment(SwingConstants.CENTER);    // Centrar la imagen verticalmente
         add(imagenActual, BorderLayout.CENTER);
 
         JButton btnAnterior = new JButton("Anterior");
+        btnAnterior.setPreferredSize(new Dimension(100, 40));
         btnAnterior.addActionListener(e -> mostrarImagenAnterior());
+
         JButton btnSiguiente = new JButton("Siguiente");
+        btnSiguiente.setPreferredSize(new Dimension(100, 40));
         btnSiguiente.addActionListener(e -> mostrarImagenSiguiente());
 
-        panelBotones = new JPanel();  // Inicializar el panelBotones aquí
+        panelBotones = new JPanel();
         panelBotones.add(btnAnterior);
         panelBotones.add(btnSiguiente);
 
         JButton btnGuardar = new JButton("Guardar");
+        btnGuardar.setPreferredSize(new Dimension(100, 40));
         btnGuardar.addActionListener(e -> guardarImagenActual());
         panelBotones.add(btnGuardar);
+
+        // Botón "Volver"
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.setPreferredSize(new Dimension(100, 40));
+        btnVolver.addActionListener(e -> cerrarVisor());
+        panelBotones.add(btnVolver);
 
         add(panelBotones, BorderLayout.SOUTH);
     }
@@ -81,12 +94,22 @@ public class VisorImagenes extends JFrame {
         }
     }
 
-    private void mostrarImagenActual() {
+    void mostrarImagenActual() {
         if (listaImagenes.size() > 0 && indiceActual >= 0 && indiceActual < listaImagenes.size()) {
             String rutaImagen = listaImagenes.get(indiceActual);
             ImageIcon icono = new ImageIcon(rutaImagen);
-            imagenActual.setIcon(icono);
-            pack();
+
+            // Obtener las dimensiones del componente imagenActual
+            int ancho = imagenActual.getWidth();
+            int alto = imagenActual.getHeight();
+
+            // Verificar que las dimensiones son válidas (mayores que cero)
+            if (ancho > 0 && alto > 0) {
+                Image imagen = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+                ImageIcon iconoEscalado = new ImageIcon(imagen);
+                imagenActual.setIcon(iconoEscalado);
+                pack();
+            }
         }
     }
 
@@ -102,5 +125,9 @@ public class VisorImagenes extends JFrame {
             indiceActual++;
             mostrarImagenActual();
         }
+    }
+
+    private void cerrarVisor() {
+        this.dispose();  // Cierra el JFrame actual
     }
 }

@@ -34,8 +34,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -57,11 +59,11 @@ public class CapturadorGUI extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
 
         Dimension[] customResolutions = new Dimension[]{
-            new Dimension(940, 600)
+            new Dimension(1080, 720)
         };
         webcam = Webcam.getDefault();
         webcam.setCustomViewSizes(customResolutions);
-        webcam.setViewSize(new Dimension(940, 600));
+        webcam.setViewSize(new Dimension(1080, 720));
         webcam.open();
         panelImagenes.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -74,7 +76,6 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
         scrollPaneImage.getVerticalScrollBar().setUnitIncrement(16);  // Puedes ajustar el valor según tu preferencia
-
     }
 
     /**
@@ -103,13 +104,20 @@ public class CapturadorGUI extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(1366, 768));
         setSize(new java.awt.Dimension(1366, 768));
 
+        btnIniciar.setBackground(new java.awt.Color(0, 102, 204));
+        btnIniciar.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnIniciar.setForeground(new java.awt.Color(255, 255, 255));
         btnIniciar.setText("Iniciar");
+        btnIniciar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIniciarActionPerformed(evt);
             }
         });
 
+        btnDetener.setBackground(new java.awt.Color(0, 102, 204));
+        btnDetener.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnDetener.setForeground(new java.awt.Color(255, 255, 255));
         btnDetener.setText("Detener");
         btnDetener.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,6 +125,9 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
 
+        btnCapturar.setBackground(new java.awt.Color(0, 102, 204));
+        btnCapturar.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnCapturar.setForeground(new java.awt.Color(255, 255, 255));
         btnCapturar.setText("Capturar");
         btnCapturar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,6 +135,9 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
 
+        btnGuardar.setBackground(new java.awt.Color(0, 102, 204));
+        btnGuardar.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnGuardar.setForeground(new java.awt.Color(255, 255, 255));
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,13 +168,16 @@ public class CapturadorGUI extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 938, Short.MAX_VALUE)
+            .addComponent(imageHolder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(imageHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
         );
 
+        btnSalir.setBackground(new java.awt.Color(0, 102, 204));
+        btnSalir.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnSalir.setForeground(new java.awt.Color(255, 255, 255));
         btnSalir.setText("Salir");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,6 +185,9 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
 
+        btnAbrirImagenes.setBackground(new java.awt.Color(0, 102, 204));
+        btnAbrirImagenes.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        btnAbrirImagenes.setForeground(new java.awt.Color(255, 255, 255));
         btnAbrirImagenes.setText("Abrir Imagenes");
         btnAbrirImagenes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -175,6 +195,9 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
 
+        btnAgrandar.setBackground(new java.awt.Color(0, 102, 204));
+        btnAgrandar.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnAgrandar.setForeground(new java.awt.Color(255, 255, 255));
         btnAgrandar.setText("Agrandar");
         btnAgrandar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,6 +205,9 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
 
+        btnGuardarTodo.setBackground(new java.awt.Color(0, 102, 204));
+        btnGuardarTodo.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        btnGuardarTodo.setForeground(new java.awt.Color(255, 255, 255));
         btnGuardarTodo.setText("Guardar Todo");
         btnGuardarTodo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -196,43 +222,44 @@ public class CapturadorGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(scrollPaneImage, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnGuardarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(32, 32, 32))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnDetener, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(259, 259, 259)
+                                .addGap(247, 247, 247)
                                 .addComponent(btnCapturar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 421, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(scrollPaneImage, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnGuardarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(scrollPaneImage, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGuardarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnGuardarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(30, Short.MAX_VALUE))
@@ -276,6 +303,11 @@ public class CapturadorGUI extends javax.swing.JFrame {
 
     private void btnCapturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapturarActionPerformed
         // TODO add your handling code here:
+        // Verificar si la cámara está encendida
+        if (!isRunning) {
+            JOptionPane.showMessageDialog(this, "Por favor, inicie la cámara antes de capturar una imagen.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return; // Salir del método si la cámara no está encendida
+        }
         try {
             // Ubicación y nombre de archivo predeterminados
             String fileName = "img" + imageCounter + ".png";
@@ -287,7 +319,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
             int panelWidth = panelImagenes.getWidth();
 
             // Establecer una altura fija para las miniaturas
-            int thumbnailHeight = 200; // Puedes ajustar esta altura según tus necesidades
+            int thumbnailHeight = 170; // Puedes ajustar esta altura según tus necesidades
 
             // Calcular el ancho proporcional para mantener la relación de aspecto
             int thumbnailWidth = (int) (image.getWidth(null) * ((double) thumbnailHeight / image.getHeight(null)));
@@ -492,7 +524,16 @@ public class CapturadorGUI extends javax.swing.JFrame {
 
         // Crear una instancia de VisorImagenes y pasar la lista de rutas de imágenes y la ruta de destino
         VisorImagenes visor = new VisorImagenes(obtenerRutasImagenes(), "C:\\Users\\aasll\\Desktop\\ProyectoColposcopia\\CapturadorImagen\\src\\img\\" + fechaActual);
+
+        // Agrandar la imagen actual
+        visor.setSize(1366, 768);
+
         visor.setVisible(true);
+        // Mostrar la imagen actualizada
+        visor.mostrarImagenActual();
+
+        visor.setExtendedState(JFrame.MAXIMIZED_BOTH);  // Maximizar a pantalla completa
+        visor.setLocationRelativeTo(null); // Centrar en la pantalla
     }//GEN-LAST:event_btnAgrandarActionPerformed
 
     private void btnGuardarTodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarTodoActionPerformed
@@ -578,14 +619,31 @@ public class CapturadorGUI extends javax.swing.JFrame {
         public void run() {
             while (true && isRunning) {
                 try {
+                    long startTime = System.currentTimeMillis(); // Registro de tiempo de inicio
                     Image image = webcam.getImage();
 
                     // Verificar si la imagen no es nula antes de crear el ImageIcon
                     if (image != null) {
-                        imageHolder.setIcon(new ImageIcon(image));
+                        // Obtener el tamaño del JLabel
+                        int labelWidth = imageHolder.getWidth();
+                        int labelHeight = imageHolder.getHeight();
+
+                        // Escalar la imagen al tamaño del JLabel
+                        Image scaledImage = image.getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+
+                        // Crear un ImageIcon con la imagen escalada
+                        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+                        // Actualizar la interfaz gráfica utilizando SwingUtilities.invokeLater()
+                        SwingUtilities.invokeLater(() -> imageHolder.setIcon(scaledIcon));
                     }
 
-                    Thread.sleep(50);
+                    long endTime = System.currentTimeMillis(); // Registro de tiempo de finalización
+                    long elapsedTime = endTime - startTime;
+
+                    // Ajustar el tiempo de espera para lograr una frecuencia deseada
+                    long sleepTime = Math.max(0, 50 - elapsedTime); // 50 milisegundos entre actualizaciones
+                    Thread.sleep(sleepTime);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CapturadorGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -653,7 +711,6 @@ public class CapturadorGUI extends javax.swing.JFrame {
         return rutasImagenes;
     }
 // Función para obtener el hash SHA-256 de una cadena
-
     private static String sha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
