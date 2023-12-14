@@ -49,6 +49,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
     Boolean isRunning = false;
     private int imageCounter = 1;
     private ArrayList<JCheckBox> listaCheckBox = new ArrayList<JCheckBox>();
+    private DatosPaciente datosPaciente;
 
     /**
      * Creates new form CapturadorGUI
@@ -99,8 +100,10 @@ public class CapturadorGUI extends javax.swing.JFrame {
         btnAbrirImagenes = new javax.swing.JButton();
         btnAgrandar = new javax.swing.JButton();
         btnGuardarTodo = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(153, 153, 255));
         setPreferredSize(new java.awt.Dimension(1366, 768));
         setSize(new java.awt.Dimension(1366, 768));
 
@@ -162,7 +165,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
 
         scrollPaneImage.setViewportView(panelImagenes);
 
-        jPanel1.setBorder(new javax.swing.border.MatteBorder(null));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -215,6 +218,16 @@ public class CapturadorGUI extends javax.swing.JFrame {
             }
         });
 
+        btnVolver.setBackground(new java.awt.Color(0, 102, 204));
+        btnVolver.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        btnVolver.setForeground(new java.awt.Color(255, 255, 255));
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -240,7 +253,8 @@ public class CapturadorGUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnAgrandar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnAbrirImagenes, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -261,8 +275,10 @@ public class CapturadorGUI extends javax.swing.JFrame {
                     .addComponent(btnGuardarTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(35, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -297,8 +313,10 @@ public class CapturadorGUI extends javax.swing.JFrame {
     private void btnDetenerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetenerActionPerformed
         // TODO add your handling code here:
         isRunning = false;
-        webcam.close();
+        panelImagenes.removeAll();
         imageHolder.setIcon(null);
+        webcam.close();
+
     }//GEN-LAST:event_btnDetenerActionPerformed
 
     private void btnCapturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapturarActionPerformed
@@ -569,6 +587,19 @@ public class CapturadorGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnGuardarTodoActionPerformed
 
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        // TODO add your handling code here:
+        // Volver a la clase DatosPaciente
+        DatosPaciente datosPaciente = new DatosPaciente();
+        datosPaciente.setVisible(true);
+
+        // Cerrar la ventana actual
+        webcam.close();
+        this.dispose();
+        // Muestra la instancia de DatosPaciente
+        datosPaciente.mostrarVentana();
+    }//GEN-LAST:event_btnVolverActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -642,7 +673,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
                     long elapsedTime = endTime - startTime;
 
                     // Ajustar el tiempo de espera para lograr una frecuencia deseada
-                    long sleepTime = Math.max(0, 50 - elapsedTime); // 50 milisegundos entre actualizaciones
+                    long sleepTime = Math.max(0, 10 - elapsedTime); // 50 milisegundos entre actualizaciones
                     Thread.sleep(sleepTime);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CapturadorGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -711,6 +742,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
         return rutasImagenes;
     }
 // Función para obtener el hash SHA-256 de una cadena
+
     private static String sha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -740,6 +772,7 @@ public class CapturadorGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnGuardarTodo;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JLabel imageHolder;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel panelImagenes;

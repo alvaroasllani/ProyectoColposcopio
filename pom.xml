@@ -11,6 +11,11 @@
             <artifactId>CapturadorCamara-library</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>es.jcalendar-library</groupId>
+            <artifactId>jcalendar-library</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,4 +23,33 @@
         <maven.compiler.target>14</maven.compiler.target>
         <exec.mainClass>com.alvaro.capturadorimagen.CapturadorImagen</exec.mainClass>
     </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>
+                                        com.alvaro.capturadorimagen.CapturadorGUI
+                                    </mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
